@@ -1,0 +1,3 @@
+[submodule "hazardous"]
+	path = hazardous
+	url = git@github.com:soda-inria/hazardous.git

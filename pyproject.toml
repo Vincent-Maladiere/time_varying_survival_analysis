@@ -1,0 +1,50 @@
+[tool.poetry]
+name = " credit-risk-models"
+version = "0.1.0"
+description = "project to predict car dealerships that might be at the risk of defaulting"
+authors = ["Raman Shrivastava <raman.shrivastava@infinit.com>"]
+readme = "README.md"
+packages = [{ include = "credit_risk_models", from = "." }]
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+psycopg2 = "^2.9.9"
+python-dotenv = "^1.0.1"
+pandas = "^2.2.2"
+scikit-learn = "^1.5.1"
+xgboost = "^2.1.1"
+matplotlib = "^3.9.2"
+seaborn = "^0.13.2"
+black = "^24.8.0"
+flake8 = "^7.1.1"
+isort = "^5.13.2"
+pytest = "^8.3.2"
+nbconvert = "^7.16.4"
+lime = "^0.2.0.1"
+nbdime = "^4.0.2"
+llvmlite = "0.43"
+azure-ai-ml = { extras = ["designer"], version = "^1.21.0" }
+azure-identity = "^1.19.0"
+mlflow = "^2.17.0"
+azureml-mlflow = "^1.58.0"
+azure-keyvault-secrets = "^4.9.0"
+sqlalchemy = "^2.0.35"
+plotly = "^5.24.1"
+scikit-survival = "^0.23.0"
+lifelines = "^0.29.0"
+skrub = "^0.3.1"
+hazardous = {path = "./hazardous", develop = true}
+
+[tool.poetry.group.dev.dependencies]
+# dev-specific dependencies
+pytest = "^8.3.2"
+black = "^24.8.0"
+ipykernel = "^6.29.5"
+flake8 = "^7.1.1"
+isort = "^5.13.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

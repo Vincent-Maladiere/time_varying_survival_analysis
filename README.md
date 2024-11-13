@@ -154,20 +154,99 @@ available at the introduction of a patient to the study, and constant for its en
 lifetime. Here, the context is quite different: we consider on-going loans as if they
 were entering the study everyday, with updated covariates.
 
-### Training
+### Time varying features - Training
 
-TODO
+Since some of our features (like the number of audits) vary across time, and we need
+to **make predictions** for loans **at any stage of their life**, we have to reproduce
+the state of a loan at different stages of its life, and evaluate our model on all
+these stages.
 
-### Prediction
+One way to achieve this is to choose multiple observation dates, and only look at the
+data prior to these dates. We would then update the duration
+(which is the time-to-event to predict) accordingly.
 
-TODO
+Let’s take an example. The following loan has been reimbursed 126 days after its
+creation:
+
+<img src="images/training_feats_1.png" width="500" height="300" />
+
+We first set the observation date as the date of the creation of the loan.
+
+- Feature-wise, at that stage the loan hasn’t received any audits (hence 0).
+- Target-wise, the duration is 126, and the loan has been reimbursed (this is what
+we want the model to learn)
+
+We then need to take the future audits into account. For this, we choose another,
+posterior, observation date:
+
+<img src="images/training_feats_2.png" width="500" height="300" />
+
+- Feature-wise, at that stage, the loan is 74 days old, and 3 audits have already
+  been performed from the start.
+- The time-to-event also gets closer! The event will now happen in 126 - 74 = 52 days.
+
+We add a new row in our features (X) and target (y) for this new observation date,
+because we want the model to consider this observation to be a different loan,
+which got created the 2024-03-15 with `n_audits_done=3`.
+
+This violates the independence component in the iid assumption, but empirically this
+should work fine. Again, we consider all rows to be independent.
+
+Let’s add one last observation date to represent the very late stage of this loan:
+
+<img src="images/training_feats_3.png" width="500" height="300" />
+
+Note that we can create richer feature sets using different time-windows relative to
+our observation dates. Let’s consider the number of audits one more time:
+
+<img src="images/training_feats_4.png" width="500" height="300" />
+
+Now that we get a good overview about our temporal feature aggregation mechanism
+during training, let’s see how this translate for prediction.
 
 
-Another idea is from lifelines, which proposes [`CoxTimeVaryingFitter`](https://lifelines.readthedocs.io/en/latest/Time%20varying%20survival%20regression.html). There approach is slightly different,
-because they create observation windows in which they consider whether individuals have
-experienced the event or not. Hence, it doesn't seem able to estimate
-probabilities for distant time horizon. This approach hasn't been tested yet in this
-project.
+### Time varying features - Prediction
+
+Once our model is trained, we have to estimate termination probabilities for on-going
+loans. Instead of computing features for different observation dates, we only consider
+today date, since we need all features observed up to now.
+
+<img src="images/predicting_feats_1.png" width="500" height="300" />
+
+Our survival analysis model estimates probabilities from 0 to 149 days, each day, for
+each loan. In other words, we predict a probability curve for each on-going loans.
+
+However, we have to select the time horizon that makes sense for each loan.
+Since we focus on the maturity reached termination, we actually want the probability
+of staying event free until the 149 days limit is reached.
+
+For instance, for a 135 days old loan, we need the default probability in
+149 - 135 = 14 days ! Note that if this loan was 20 days old, we would be looking
+at the probability at the 149 - 20 = 129 days instead!
+
+<img src="images/predicting_feats_2.png" width="600" height="300" />
+
+This gives the probability of termination for "maturity reached", but to estimate the
+total termination probability of each on-going loan, we need to add the probability of
+the other kinds of terminations (car sold not paid and audit overdue) which can happen
+before the 149 days limit.
+
+Therefore, for a single loan, whose age is 60 days, the termination probability would be
+the following:
+
+<img src="images/predicting_feats_3.png" width="800" height="300" />
+
+$$P(\mathrm{termination}| \mathrm{age}=60, x) = 0.58 + 0.17 = 0.75$$
+
+
+### Alternatives
+
+Lifelines proposes another scheme to handle time varying features, using the estimator
+[`CoxTimeVaryingFitter`](https://lifelines.readthedocs.io/en/latest/Time%20varying%20survival%20regression.html).
+Their approach differs in that they create observation windows in which they consider
+whether individuals have experienced the event or not. Hence, it doesn't seem able
+to estimate probabilities for distant time horizons. This approach hasn't been tested
+yet in this project.
 
 
 ## Implementation and data engineering

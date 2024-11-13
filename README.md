@@ -5,6 +5,14 @@ which gracefully accepted to help the open-source community.
 This startup provides credit lines to car dealerships which help them buy new cars on
 the second-hand market.
 
+
+[Context](#context)<br>
+[Objectives](#objectives)<br>
+[Methodology and survival analysis](#methodology-and-survival-analysis)<br>
+[Time varying features](#time-varying-features)<br>
+[Implementation and data engineering](#implementation-and-data-engineering)<br>
+
+
 ## Context
 
 Each dealer (a.k.a borrower) can ask for multiple loans, within the limit of their
@@ -224,7 +232,7 @@ loans. Instead of computing features for different observation dates, we only co
 today date, since we need all features observed up to now.
 
 <p align="center">
-    <img src="images/predicting_feats_1.png" width="600" height="300" />
+    <img src="images/predicting_feats_1.png" width="600" height="400" />
 </p>
 
 Our survival analysis model estimates probabilities from 0 to 149 days, each day, for
@@ -239,7 +247,7 @@ For instance, for a 135 days old loan, we need the default probability in
 at the probability at the 149 - 20 = 129 days instead!
 
 <p align="center">
-    <img src="images/predicting_feats_2.png" width="600" height="300" />
+    <img src="images/predicting_feats_2.png" width="800" height="400" />
 </p>
 
 This gives the probability of termination for "maturity reached", but to estimate the

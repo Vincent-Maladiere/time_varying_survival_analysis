@@ -17,8 +17,10 @@ the second-hand market.
 
 Each dealer (a.k.a borrower) can ask for multiple loans, within the limit of their
 credit lines. From the moment loans are granted and the money transfered on
-dealers' accounts, **dealers have 149 days to reimburse**. Failing to reimburse a loan
-after the 149 days limit terminates the loan, with the reason **"Maturity reached"**.
+dealers' accounts, **dealers have 149 days to reimburse, with a single payment** 
+(the reimbursment is done in one shot, after the dealer receive the money from selling
+the car bought with the loan). Failing to reimburse a loan after the 149 days limit
+terminates the loan, with the reason **"Maturity reached"**.
 
 Additionally, dealers have to perform audits and checks, to prove the car they bought
 is still in the parking lot of their dealership. These audits are scheduled every

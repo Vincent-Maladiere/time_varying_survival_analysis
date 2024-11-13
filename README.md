@@ -1,7 +1,7 @@
 # Credit Risk Models
 
 This repository contains a real-world data science project from a fintech startup,
-which gracefully accepted to help the data science open source community.
+which gracefully accepted to help the open-source community.
 This startup provides credit lines to car dealerships which help them buy new cars on
 the second-hand market.
 

@@ -288,7 +288,35 @@ Azure ML. The startup plans to create a training pipeline, which would run month
 - `azureml_pipelines/survboost_prediction_pipeline`, which push a prediction job to
 Azure ML. This job will then run daily on the cloud.
 
-TODO
+### `DatasetMaker`
+
+The orchestrator class that stands out in this project is the
+`credit_risk_models.risk_model_survival_analysis._make_dataset.DatasetMaker`.
+
+It is responsible for creating the features X and targets y used for training, but also
+the features X to use for prediction in production. As we explained above, the
+difference both features is that we sample multiple observation times for each loan 
+during training, whereas we use a today as a single observation date for on-going loans
+on which to make a prediction.
+
+Use `DatasetMaker(is_training=True)` to create X for training, and
+`DatasetMaker(is_training=False)` to create X for daily prediction.
+
+This class is also very handy because it stores intermediary tables in cache, using
+the `functools.cached_property()` decorator. This allows:
+- Reusing already computed tables, which save time on IO by not reloading data from
+the database, and not reproducing all transformations
+- Giving a single object with autocompletion to access these intermediary tables.
+Combined with skrub TableReport, we can inspect this data engineering pipeline with
+ease.
+
+### LIME
+
+Explainability is key to gain stakeholders' trust. Not only do they need marginal
+feature importances with, e.g., `permutation_importance`, but they also ask for
+feature importances at the prediction level. This is where libraries like LIME or
+SHAP shine, although most data scientists have a hard time giving a sound and
+statistically correct interpretation of the results of these packages.
 
 
 ## Setup
@@ -296,7 +324,5 @@ TODO
 This project uses Poetry for dependency management. To set up:
 
 1. Install Poetry
-2. Run `poetry install`
+2. Install hazardous locally, then run `poetry install`
 3. Activate the virtual environment with `poetry shell`
-
-TODO
